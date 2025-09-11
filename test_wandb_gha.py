@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""
+简化的W&B GHA测试脚本 - 专门用于复现CI环境中的artifact问题
+"""
+
+import os
+import sys
+import time
+import wandb
+import tempfile
+from pathlib import Path
+
+def main():
+    print("=== W&B GitHub Actions 测试 ===")
+    
+    # 检查环境
+    api_key = os.getenv('WANDB_API_KEY')
+    base_url = os.getenv('WANDB_BASE_URL', 'https://api.wandb.ai')
+    is_ci = os.getenv('CI', 'false').lower() == 'true'
+    is_gha = os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true'
+    
+    print(f"🔑 API Key: {'设置' if api_key else '未设置'}")
+    print(f"🌐 Base URL: {base_url}")
+    print(f"🏗️ CI环境: {'是' if is_ci else '否'}")
+    print(f"🐙 GitHub Actions: {'是' if is_gha else '否'}")
+    print(f"🐍 Python版本: {sys.version}")
+    print(f"📦 W&B版本: {wandb.__version__}")
+    
+    if not api_key:
+        print("❌ 错误: WANDB_API_KEY 未设置")
+        return False
+    
+    try:
+        # 初始化W&B
+        print("\n--- 初始化W&B ---")
+        run = wandb.init(
+            project="gha-artifact-test",
+            name=f"{'gha' if is_gha else 'local'}-test-{int(time.time())}",
+            tags=["gha-test", "artifact-debug"]
+        )
+        print(f"✅ 运行初始化: {run.name}")
+        print(f"✅ 项目: {run.project}")
+        print(f"✅ URL: {run.url}")
+        
+        # 记录基本指标
+        print("\n--- 记录指标 ---")
+        wandb.log({"test_metric": 1.0, "environment": "gha" if is_gha else "local"})
+        print("✅ 指标记录完成")
+        
+        # 创建测试artifact
+        print("\n--- 创建Artifact ---")
+        artifact = wandb.Artifact(
+            name="test-pipeline-output",
+            type="dataset",
+            description=f"测试artifact from {'GHA' if is_gha else 'local'}"
+        )
+        
+        # 创建测试文件
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            f.write(f"Test file created in {'GHA' if is_gha else 'local'} environment\n")
+            f.write(f"Timestamp: {time.time()}\n")
+            f.write(f"Environment variables:\n")
+            f.write(f"  CI: {os.getenv('CI', 'not set')}\n")
+            f.write(f"  GITHUB_ACTIONS: {os.getenv('GITHUB_ACTIONS', 'not set')}\n")
+            f.write(f"  WANDB_BASE_URL: {base_url}\n")
+            temp_file = f.name
+        
+        # 添加文件到artifact
+        artifact.add_file(temp_file, name="test_output.txt")
+        print(f"✅ 文件添加到artifact: {temp_file}")
+        
+        # 上传artifact
+        print("\n--- 上传Artifact ---")
+        print("🔄 开始上传...")
+        logged_artifact = wandb.log_artifact(artifact)
+        print("✅ log_artifact() 调用完成")
+        
+        # 等待上传完成
+        print("🔄 等待上传完成...")
+        logged_artifact.wait()
+        print(f"✅ Artifact上传完成: {logged_artifact.name}:{logged_artifact.version}")
+        
+        # 额外等待时间（模拟客户的30秒等待）
+        print("\n--- 额外等待时间 ---")
+        print("🔄 等待30秒确保后台进程完成...")
+        time.sleep(30)
+        
+        # 尝试通过API验证
+        print("\n--- API验证 ---")
+        try:
+            api = wandb.Api()
+            retrieved_artifact = api.artifact(f"{run.entity}/{run.project}/test-pipeline-output:latest")
+            print(f"✅ API验证成功: {retrieved_artifact.name}")
+            print(f"✅ 文件数量: {len(retrieved_artifact.files())}")
+            
+            for file in retrieved_artifact.files():
+                print(f"  📄 {file.name} ({file.size} bytes)")
+                
+        except Exception as e:
+            print(f"❌ API验证失败: {e}")
+            # 这里不返回False，因为这可能就是我们要复现的问题
+        
+        # 清理临时文件
+        os.unlink(temp_file)
+        
+        # 完成运行
+        wandb.finish()
+        print("\n✅ 测试完成")
+        
+        print(f"\n🔗 请检查W&B Dashboard: {run.url}")
+        print("📋 重点检查:")
+        print("  1. 运行是否出现在项目列表中")
+        print("  2. Artifact是否在Artifacts页面可见")
+        print("  3. Artifact中的文件是否可以下载")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ 测试失败: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+if __name__ == "__main__":
+    success = main()
+    sys.exit(0 if success else 1)
