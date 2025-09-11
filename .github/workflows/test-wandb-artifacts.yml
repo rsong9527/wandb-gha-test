@@ -1,0 +1,83 @@
+name: Test W&B Artifacts in GHA
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-wandb-staging:
+    name: "Test W&B Artifacts (Staging)"
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout代码
+      uses: actions/checkout@v4
+      
+    - name: 设置Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: 显示环境信息
+      run: |
+        echo "=== 环境信息 ==="
+        echo "Python: $(python --version)"
+        echo "W&B: $(python -c 'import wandb; print(wandb.__version__)')"
+        echo "Runner: $RUNNER_OS"
+        echo "CI: $CI"
+        echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
+        
+    - name: 测试W&B Artifacts (Staging)
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+        WANDB_MODE: online
+      run: |
+        echo "=== 测试Staging环境 ==="
+        python test_wandb_gha.py
+        
+    - name: 上传日志作为GitHub Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: wandb-logs-staging
+        path: |
+          wandb/
+          *.log
+        retention-days: 7
+
+  # 如果有Woven服务器的访问权限，可以取消注释这个job
+  # test-wandb-woven:
+  #   name: "Test W&B Artifacts (Woven)"
+  #   runs-on: ubuntu-latest
+  #   
+  #   steps:
+  #   - name: Checkout代码
+  #     uses: actions/checkout@v4
+  #     
+  #   - name: 设置Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.9'
+  #       
+  #   - name: 安装依赖
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install -r requirements.txt
+  #       
+  #   - name: 测试W&B Artifacts (Woven)
+  #     env:
+  #       WANDB_API_KEY: ${{ secrets.WANDB_API_KEY_WOVEN }}
+  #       WANDB_BASE_URL: https://wb.swp-ml.tri-ad.global
+  #       WANDB_MODE: online
+  #     run: |
+  #       echo "=== 测试Woven环境 ==="
+  #       python test_wandb_gha.py
