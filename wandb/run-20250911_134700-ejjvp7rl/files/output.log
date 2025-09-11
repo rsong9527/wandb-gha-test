@@ -1,0 +1,53 @@
+✅ Pipeline运行初始化: local-pipeline-1757566019
+✅ 项目: pipeline-artifact-test
+✅ URL: https://staging-aws.wandb.io/rsong/pipeline-artifact-test/runs/ejjvp7rl
+
+--- 记录Pipeline指标 ---
+✅ Pipeline指标记录完成
+
+--- 创建Pipeline输出 ---
+✅ 创建了 9 个pipeline文件
+✅ 总大小: 4.3 MB
+  📄 model_v1.pb: 0.0 MB
+  📄 large_model.pb: 4.3 MB
+  📄 pipeline_config.json: 0.0 MB
+  📄 evaluation_results.txt: 0.0 MB
+  📄 output_003.pb: 0.0 MB
+  📄 output_002.pb: 0.0 MB
+  📄 output_001.pb: 0.0 MB
+  📄 output_004.pb: 0.0 MB
+  📄 output_000.pb: 0.0 MB
+
+--- 创建Pipeline输出Artifact ---
+✅ 添加pipeline文件: model_v1.pb
+✅ 添加pipeline文件: large_model.pb
+✅ 添加pipeline文件: pipeline_config.json
+✅ 添加pipeline文件: evaluation_results.txt
+✅ 添加pipeline文件: output_003.pb
+✅ 添加pipeline文件: output_002.pb
+✅ 添加pipeline文件: output_001.pb
+✅ 添加pipeline文件: output_004.pb
+✅ 添加pipeline文件: output_000.pb
+
+--- 上传Pipeline Artifact ---
+🔄 开始上传pipeline输出...
+✅ log_artifact() 调用完成
+🔄 等待pipeline artifact上传完成...
+✅ Pipeline Artifact上传完成: outputs-demo_day_2023_few_s1:v0:v0
+
+--- Pipeline处理等待时间 ---
+🔄 等待30秒确保pipeline后台处理完成...
+
+--- 验证Pipeline Artifact ---
+✅ API验证成功: outputs-demo_day_2023_few_s1:latest
+✅ 文件数量: 9
+  📄 evaluation_results.txt (0.0 MB)
+  📄 large_model.pb (4.3 MB)
+  📄 model_v1.pb (0.0 MB)
+  📄 output_000.pb (0.0 MB)
+  📄 output_001.pb (0.0 MB)
+  📄 output_002.pb (0.0 MB)
+  📄 output_003.pb (0.0 MB)
+  📄 output_004.pb (0.0 MB)
+  📄 pipeline_config.json (0.0 MB)
+✅ 总大小: 4.3 MB

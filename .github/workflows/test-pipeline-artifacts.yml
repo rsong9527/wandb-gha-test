@@ -1,4 +1,4 @@
-name: Test W&B Artifacts in GHA
+name: Test Pipeline Artifacts
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-wandb-staging:
-    name: "Test W&B Artifacts (Staging)"
+  test-pipeline-artifacts:
+    name: "Test Pipeline Artifacts (Staging)"
     runs-on: ubuntu-latest
     
     steps:
@@ -34,50 +34,42 @@ jobs:
         echo "Runner: $RUNNER_OS"
         echo "CI: $CI"
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
+        echo "可用磁盘空间:"
+        df -h
         
-    - name: 测试W&B Artifacts (Staging)
+    - name: 测试简单W&B Artifacts
       env:
         WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         WANDB_BASE_URL: https://staging-aws.wandb.io
         WANDB_MODE: online
       run: |
-        echo "=== 测试Staging环境 ==="
+        echo "=== 测试简单Artifacts ==="
         python test_wandb_gha.py
         
-    - name: 上传日志作为GitHub Artifacts
+    - name: 测试Pipeline输出Artifacts
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+        WANDB_MODE: online
+      run: |
+        echo "=== 测试Pipeline输出场景 ==="
+        python test_pipeline_artifacts.py
+        
+    - name: 对比测试结果
+      if: always()
+      run: |
+        echo "=== 测试结果对比 ==="
+        echo "1. 简单artifacts应该正常工作"
+        echo "2. Pipeline输出artifacts是关键测试点"
+        echo "3. 检查Dashboard中的artifacts显示情况"
+        echo "4. 特别关注.pb文件和大文件的处理"
+        
+    - name: 上传测试日志
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: wandb-logs-staging
+        name: wandb-pipeline-test-logs
         path: |
           wandb/
           *.log
         retention-days: 7
-
-  # 如果有Woven服务器的访问权限，可以取消注释这个job
-  # test-wandb-woven:
-  #   name: "Test W&B Artifacts (Woven)"
-  #   runs-on: ubuntu-latest
-  #   
-  #   steps:
-  #   - name: Checkout代码
-  #     uses: actions/checkout@v4
-  #     
-  #   - name: 设置Python
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: '3.9'
-  #       
-  #   - name: 安装依赖
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install -r requirements.txt
-  #       
-  #   - name: 测试W&B Artifacts (Woven)
-  #     env:
-  #       WANDB_API_KEY: ${{ secrets.WANDB_API_KEY_WOVEN }}
-  #       WANDB_BASE_URL: https://wb.swp-ml.tri-ad.global
-  #       WANDB_MODE: online
-  #     run: |
-  #       echo "=== 测试Woven环境 ==="
-  #       python test_wandb_gha.py

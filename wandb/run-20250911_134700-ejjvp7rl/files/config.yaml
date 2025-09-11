@@ -1,0 +1,54 @@
+_wandb:
+    value:
+        cli_version: 0.21.3
+        code_path: code/test_pipeline_artifacts.py
+        e:
+            52redbqgih3quhb1miq70yr9z7kmh3tt:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 20
+                    memoryGb: 24
+                    name: Apple M4 Pro
+                    pcpuCores: 10
+                    ramTotalBytes: "25769803776"
+                    swapTotalBytes: "9663676416"
+                codePath: test_pipeline_artifacts.py
+                codePathLocal: test_pipeline_artifacts.py
+                cpu_count: 14
+                cpu_count_logical: 14
+                disk:
+                    /:
+                        total: "494384795648"
+                        used: "313856135168"
+                email: rsong@wandb.com
+                executable: /Users/rsong/woven-toyota/wandb-gha-test/venv/bin/python
+                git:
+                    commit: 5213a1de545a0e13b951a7365c92af84bcc8f996
+                    remote: https://github.com/rsong9527/wandb-gha-test.git
+                host: Richard-Song-FMK9FVTDKM
+                memory:
+                    total: "25769803776"
+                os: macOS-15.6.1-arm64-arm-64bit-Mach-O
+                program: /Users/rsong/woven-toyota/wandb-gha-test/test_pipeline_artifacts.py
+                python: CPython 3.13.3
+                root: /Users/rsong/woven-toyota/wandb-gha-test
+                startedAt: "2025-09-11T04:47:00.414773Z"
+                writerId: 52redbqgih3quhb1miq70yr9z7kmh3tt
+        m: []
+        python_version: 3.13.3
+        t:
+            "3":
+                - 2
+                - 13
+                - 15
+                - 16
+            "4": 3.13.3
+            "5": 0.21.3
+            "12": 0.21.3
+            "13": darwin-arm64
+environment:
+    value: local
+model_version:
+    value: v1.15.0
+pipeline_type:
+    value: demo_day_2023_few_s1

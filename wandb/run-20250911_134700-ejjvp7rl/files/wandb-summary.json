@@ -1,0 +1,1 @@
+{"inference_time":120.5,"batch_size":32,"mtmc_assa":63.423,"mtmc_hota":65.63,"_wandb":{"runtime":38},"_step":2,"mtmc_deta":68.05,"_runtime":38,"pipeline_stage":"evaluation","processing_time":45.2,"_timestamp":1.7575660216201138e+09,"processed_files":1250}

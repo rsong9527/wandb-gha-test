@@ -1,0 +1,23 @@
+✅ 运行初始化: local-test-1757564111
+✅ 项目: gha-artifact-test
+✅ URL: https://staging-aws.wandb.io/rsong/gha-artifact-test/runs/tc5vzxbf
+
+--- 记录指标 ---
+✅ 指标记录完成
+
+--- 创建Artifact ---
+✅ 文件添加到artifact: /var/folders/hb/kt9m075x7k102b2yklkd7n1h0000gp/T/tmp9wma4rj5.txt
+
+--- 上传Artifact ---
+🔄 开始上传...
+✅ log_artifact() 调用完成
+🔄 等待上传完成...
+✅ Artifact上传完成: test-pipeline-output:v1:v1
+
+--- 额外等待时间 ---
+🔄 等待30秒确保后台进程完成...
+
+--- API验证 ---
+✅ API验证成功: test-pipeline-output:latest
+✅ 文件数量: 1
+  📄 test_output.txt (179 bytes)
