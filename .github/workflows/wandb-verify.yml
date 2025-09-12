@@ -1,0 +1,112 @@
+name: W&B Verify Test
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  wandb-verify-staging:
+    name: "W&B Verify - Staging Environment"
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout代码
+      uses: actions/checkout@v4
+      
+    - name: 设置Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: 安装W&B
+      run: |
+        python -m pip install --upgrade pip
+        pip install wandb>=0.21.3
+        
+    - name: 显示环境信息
+      run: |
+        echo "=== 环境信息 ==="
+        echo "Python: $(python --version)"
+        echo "W&B: $(python -c 'import wandb; print(wandb.__version__)')"
+        echo "Runner: $RUNNER_OS"
+        echo "CI: $CI"
+        echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
+        
+    - name: W&B Verify - Staging环境
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+      run: |
+        echo "=== W&B Verify - Staging环境 ==="
+        echo "Base URL: $WANDB_BASE_URL"
+        echo "API Key设置: ${{ secrets.WANDB_API_KEY != '' }}"
+        
+        # 运行wandb verify并捕获输出
+        echo "开始运行 wandb verify..."
+        wandb verify || echo "wandb verify 执行完成（可能有警告或错误）"
+        
+    - name: 测试基本W&B功能
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+      run: |
+        echo "=== 测试基本W&B功能 ==="
+        python -c "
+        import wandb
+        import os
+        
+        print('🔄 测试W&B基本功能...')
+        
+        # 测试登录
+        try:
+            api = wandb.Api()
+            user = api.viewer
+            print(f'✅ W&B API连接成功: {user}')
+        except Exception as e:
+            print(f'❌ W&B API连接失败: {e}')
+        
+        # 测试简单的运行创建
+        try:
+            run = wandb.init(project='verify-test', name='gha-verify-test')
+            wandb.log({'test_metric': 1.0})
+            wandb.finish()
+            print('✅ W&B运行创建成功')
+        except Exception as e:
+            print(f'❌ W&B运行创建失败: {e}')
+        "
+
+  # 如果有访问权限，可以测试Woven服务器
+  # wandb-verify-woven:
+  #   name: "W&B Verify - Woven Environment"  
+  #   runs-on: ubuntu-latest
+  #   
+  #   steps:
+  #   - name: Checkout代码
+  #     uses: actions/checkout@v4
+  #     
+  #   - name: 设置Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.9'
+  #       
+  #   - name: 安装W&B
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install wandb>=0.21.3
+  #       
+  #   - name: W&B Verify - Woven环境
+  #     env:
+  #       WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+  #       WANDB_BASE_URL: https://wb.swp-ml.tri-ad.global
+  #     run: |
+  #       echo "=== W&B Verify - Woven环境 ==="
+  #       echo "Base URL: $WANDB_BASE_URL"
+  #       
+  #       # 测试连接性
+  #       echo "测试Woven服务器连接性..."
+  #       curl -I https://wb.swp-ml.tri-ad.global/health || echo "无法连接到Woven服务器"
+  #       
+  #       # 运行wandb verify
+  #       echo "开始运行 wandb verify..."
+  #       wandb verify || echo "wandb verify 执行完成（可能有警告或错误）"

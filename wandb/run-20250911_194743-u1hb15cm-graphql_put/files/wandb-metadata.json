@@ -1,0 +1,15 @@
+{
+  "os":  "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.3",
+  "startedAt":  "2025-09-11T10:47:43.207437Z",
+  "args":  [
+    "verify"
+  ],
+  "program":  "/Users/rsong/woven-toyota/wandb-gha-test/venv/bin/wandb",
+  "codePath":  "venv/bin/wandb",
+  "email":  "rsong@wandb.com",
+  "root":  "/Users/rsong/woven-toyota/wandb-gha-test",
+  "host":  "Richard-Song-FMK9FVTDKM",
+  "executable":  "/Users/rsong/woven-toyota/wandb-gha-test/venv/bin/python3.13",
+  "writerId":  "p7wrce3tdivxich0be2f7h4iadcovuve"
+}

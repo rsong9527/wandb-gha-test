@@ -1,0 +1,20 @@
+2025-09-11 19:47:57,080 INFO    MainThread:23859 [wandb_init.py:setup_run_log_directory():686] Logging user logs to /Users/rsong/woven-toyota/wandb-gha-test/wandb/run-20250911_194757-u1hb15cm-check_run/logs/debug.log
+2025-09-11 19:47:57,080 INFO    MainThread:23859 [wandb_init.py:setup_run_log_directory():687] Logging internal logs to /Users/rsong/woven-toyota/wandb-gha-test/wandb/run-20250911_194757-u1hb15cm-check_run/logs/debug-internal.log
+2025-09-11 19:47:57,080 INFO    MainThread:23859 [wandb_init.py:init():813] calling init triggers
+2025-09-11 19:47:57,080 INFO    MainThread:23859 [wandb_init.py:init():818] wandb.init called with sweep_config: {}
+config: {'epochs': 4, 'stringTest': 'A test config', 'dictTest': {'config_val': 2, 'config_string': 'config string'}, 'listTest': [0, 'one', '2'], '_wandb': {'code_path': 'code/venv/bin/wandb'}}
+2025-09-11 19:47:57,081 INFO    MainThread:23859 [wandb_init.py:init():854] starting backend
+2025-09-11 19:47:57,081 INFO    MainThread:23859 [wandb_init.py:init():857] sending inform_init request
+2025-09-11 19:47:57,081 INFO    MainThread:23859 [wandb_init.py:init():865] backend started and connected
+2025-09-11 19:47:57,082 INFO    MainThread:23859 [wandb_init.py:init():936] updated telemetry
+2025-09-11 19:47:57,083 INFO    MainThread:23859 [wandb_init.py:init():960] communicating run to backend with 90.0 second timeout
+2025-09-11 19:47:57,886 INFO    MainThread:23859 [wandb_init.py:init():1011] starting run threads in backend
+2025-09-11 19:47:57,948 INFO    MainThread:23859 [wandb_run.py:_console_start():2494] atexit reg
+2025-09-11 19:47:57,948 INFO    MainThread:23859 [wandb_run.py:_redirect():2342] redirect: wrap_raw
+2025-09-11 19:47:57,948 INFO    MainThread:23859 [wandb_run.py:_redirect():2411] Wrapping output streams.
+2025-09-11 19:47:57,948 INFO    MainThread:23859 [wandb_run.py:_redirect():2434] Redirects installed.
+2025-09-11 19:47:57,948 INFO    MainThread:23859 [wandb_init.py:init():1057] run started, returning control to user process
+2025-09-11 19:47:57,951 INFO    MainThread:23859 [wandb_run.py:_finish():2260] finishing run rsong/verify/u1hb15cm-check_run
+2025-09-11 19:47:57,951 INFO    MainThread:23859 [wandb_run.py:_atexit_cleanup():2459] got exitcode: 0
+2025-09-11 19:47:57,951 INFO    MainThread:23859 [wandb_run.py:_restore():2441] restore
+2025-09-11 19:47:57,951 INFO    MainThread:23859 [wandb_run.py:_restore():2447] restore done

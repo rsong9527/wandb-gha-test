@@ -1,0 +1,46 @@
+_wandb:
+    value:
+        cli_version: 0.21.3
+        code_path: code/venv/bin/wandb
+        e:
+            im4j4c3lymsxqdfwj99p64vtepvqp87w:
+                args:
+                    - verify
+                codePath: venv/bin/wandb
+                email: rsong@wandb.com
+                executable: /Users/rsong/woven-toyota/wandb-gha-test/venv/bin/python3.13
+                host: Richard-Song-FMK9FVTDKM
+                os: macOS-15.6.1-arm64-arm-64bit-Mach-O
+                program: /Users/rsong/woven-toyota/wandb-gha-test/venv/bin/wandb
+                python: CPython 3.13.3
+                root: /Users/rsong/woven-toyota/wandb-gha-test
+                startedAt: "2025-09-11T10:47:57.077242Z"
+                writerId: im4j4c3lymsxqdfwj99p64vtepvqp87w
+        m: []
+        python_version: 3.13.3
+        t:
+            "3":
+                - 2
+                - 3
+                - 14
+                - 16
+                - 61
+            "4": 3.13.3
+            "5": 0.21.3
+            "10":
+                - 20
+            "12": 0.21.3
+            "13": darwin-arm64
+dictTest:
+    value:
+        config_string: config string
+        config_val: 2
+epochs:
+    value: 4
+listTest:
+    value:
+        - 0
+        - one
+        - "2"
+stringTest:
+    value: A test config

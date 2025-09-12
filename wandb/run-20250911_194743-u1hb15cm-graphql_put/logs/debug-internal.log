@@ -1,0 +1,12 @@
+{"time":"2025-09-11T19:47:43.86951+09:00","level":"INFO","msg":"stream: starting","core version":"0.21.3"}
+{"time":"2025-09-11T19:47:45.017831+09:00","level":"INFO","msg":"stream: created new stream","id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:45.017888+09:00","level":"INFO","msg":"handler: started","stream_id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:45.017896+09:00","level":"INFO","msg":"stream: started","id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:45.017915+09:00","level":"INFO","msg":"sender: started","stream_id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:45.018186+09:00","level":"INFO","msg":"writer: started","stream_id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:45.364013+09:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"updating run metadata","runtime_seconds":0.016580458}],"total_operations":1}}
+{"time":"2025-09-11T19:47:46.400409+09:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-11T19:47:46.890285+09:00","level":"INFO","msg":"stream: closing","id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:46.890315+09:00","level":"INFO","msg":"handler: closed","stream_id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:46.890422+09:00","level":"INFO","msg":"sender: closed","stream_id":"u1hb15cm-graphql_put"}
+{"time":"2025-09-11T19:47:46.890433+09:00","level":"INFO","msg":"stream: closed","id":"u1hb15cm-graphql_put"}
