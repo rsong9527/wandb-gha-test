@@ -1,0 +1,209 @@
+name: Detailed W&B Debug Test
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  detailed-wandb-debug:
+    name: "Detailed W&B Debug - Match Woven Level"
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout代码
+      uses: actions/checkout@v4
+      
+    - name: 设置Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10.18'
+        
+    - name: 显示详细环境信息
+      run: |
+        echo "=== 详细环境信息 ==="
+        echo "操作系统: $(uname -a)"
+        echo "Python版本: $(python --version)"
+        echo "Python路径: $(which python)"
+        echo "Pip版本: $(pip --version)"
+        echo "当前目录: $(pwd)"
+        echo "用户: $(whoami)"
+        echo "环境变量:"
+        env | grep -E "(GITHUB|CI|RUNNER|PYTHON)" | sort
+        echo "磁盘空间:"
+        df -h
+        echo "内存信息:"
+        free -h
+        
+    - name: 安装W&B with详细日志
+      run: |
+        echo "=== 安装W&B ==="
+        python -m pip install --upgrade pip
+        echo "安装wandb..."
+        pip install wandb>=0.21.3 --verbose
+        echo "验证安装:"
+        pip show wandb
+        echo "Python包列表:"
+        pip list | grep -E "(wandb|protobuf|pydantic|requests)"
+        
+    - name: W&B详细连接测试
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+        WANDB_DEBUG: true
+        WANDB_CONSOLE: wrap
+      run: |
+        echo "=== W&B详细连接测试 ==="
+        echo "WANDB_BASE_URL: $WANDB_BASE_URL"
+        echo "WANDB_API_KEY存在: ${{ secrets.WANDB_API_KEY != '' }}"
+        echo "WANDB_DEBUG: $WANDB_DEBUG"
+        
+        echo "测试基本连接..."
+        python -c "
+        import wandb
+        import os
+        import sys
+        import traceback
+        
+        print('Python版本:', sys.version)
+        print('W&B版本:', wandb.__version__)
+        print('当前工作目录:', os.getcwd())
+        
+        try:
+            print('尝试API连接...')
+            api = wandb.Api()
+            user = api.viewer
+            print('✅ API连接成功:', user)
+        except Exception as e:
+            print('❌ API连接失败:', e)
+            traceback.print_exc()
+        "
+        
+    - name: 运行wandb verify with详细输出
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+        WANDB_DEBUG: true
+        WANDB_CONSOLE: wrap
+      run: |
+        echo "=== 运行wandb verify ==="
+        echo "开始详细的wandb verify测试..."
+        
+        # 设置详细的调试
+        export WANDB_DEBUG=true
+        export WANDB_CONSOLE=wrap
+        
+        # 运行wandb verify并捕获所有输出
+        echo "执行: wandb verify"
+        wandb verify 2>&1 || echo "wandb verify执行完成（退出码: $?）"
+        
+        echo "=== wandb verify完成 ==="
+        
+    - name: 详细的W&B功能测试
+      env:
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        WANDB_BASE_URL: https://staging-aws.wandb.io
+        WANDB_DEBUG: true
+        WANDB_CONSOLE: wrap
+      run: |
+        echo "=== 详细W&B功能测试 ==="
+        
+        python -c "
+        import wandb
+        import os
+        import sys
+        import time
+        import tempfile
+        import traceback
+        from pathlib import Path
+        
+        print('=== 开始详细W&B测试 ===')
+        
+        try:
+            # 初始化运行
+            print('初始化W&B运行...')
+            run = wandb.init(
+                project='detailed-debug-test',
+                name='gha-detailed-test-' + str(int(time.time())),
+                tags=['detailed-debug', 'gha-test']
+            )
+            print('✅ 运行初始化成功:', run.name)
+            print('✅ 项目:', run.project)
+            print('✅ URL:', run.url)
+            
+            # 记录指标
+            print('记录测试指标...')
+            wandb.log({'test_metric': 1.0, 'debug_test': True})
+            print('✅ 指标记录成功')
+            
+            # 创建artifact
+            print('创建测试artifact...')
+            artifact = wandb.Artifact('detailed-test-artifact', type='dataset')
+            
+            # 创建测试文件
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+                f.write('详细测试文件内容\\n')
+                f.write('创建时间: ' + str(time.time()) + '\\n')
+                f.write('环境: GitHub Actions\\n')
+                temp_file = f.name
+            
+            artifact.add_file(temp_file, name='detailed_test.txt')
+            print('✅ 文件添加到artifact')
+            
+            # 上传artifact
+            print('上传artifact...')
+            logged_artifact = wandb.log_artifact(artifact)
+            print('✅ artifact上传调用完成')
+            
+            # 等待上传
+            print('等待artifact上传完成...')
+            logged_artifact.wait()
+            print('✅ artifact上传完成:', logged_artifact.name, logged_artifact.version)
+            
+            # API验证
+            print('通过API验证artifact...')
+            api = wandb.Api()
+            retrieved = api.artifact(f'{run.entity}/{run.project}/detailed-test-artifact:latest')
+            print('✅ API验证成功:', retrieved.name)
+            print('✅ 文件数量:', len(retrieved.files()))
+            
+            # 清理
+            os.unlink(temp_file)
+            wandb.finish()
+            print('✅ 测试完成')
+            
+        except Exception as e:
+            print('❌ 测试失败:', e)
+            traceback.print_exc()
+            sys.exit(1)
+        "
+        
+    - name: 收集调试信息
+      if: always()
+      run: |
+        echo "=== 收集调试信息 ==="
+        echo "当前目录内容:"
+        ls -la
+        
+        echo "查找wandb相关文件:"
+        find . -name "*wandb*" -type f 2>/dev/null | head -20
+        
+        echo "查找日志文件:"
+        find . -name "*.log" -type f 2>/dev/null | head -10
+        
+        echo "Python site-packages:"
+        python -c "import site; print('\\n'.join(site.getsitepackages()))"
+        
+        echo "系统进程:"
+        ps aux | grep -E "(python|wandb)" | grep -v grep || echo "无相关进程"
+        
+    - name: 上传所有日志和调试信息
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: detailed-wandb-debug-logs
+        path: |
+          wandb/
+          *.log
+          **/*.log
+        retention-days: 7
