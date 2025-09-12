@@ -1,26 +1,51 @@
-name: W&B Verify
+# .github/workflows/ci.yml
+
+name: W&B Verify (with Debug)
 
 on:
   workflow_dispatch:   # 手动触发
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # 我们需要确认这是否真的在官方 Runner 上运行
+
     steps:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # ===============================================================
+      # === 新增的调试步骤：打印详细的环境信息 ===
+      # ===============================================================
+      - name: Debug Environment Information
+        run: |
+          echo "--- Who am I? ---"
+          whoami
+          echo "--- Home Directory ---"
+          echo $HOME
+          echo "--- Current Directory ---"
+          pwd
+          echo "--- Root Directory Permissions ---"
+          ls -la /
+          echo "--- Home Directory Permissions ---"
+          ls -la ~/
+          echo "--- Environment Variables ---"
+          env | sort
+
       - name: Install wandb
         run: |
           python -m pip install --upgrade pip
           python -m pip install "wandb==0.19.4" 
 
-      - name: Run wandb verify
+      - name: Run wandb verify (with Debug Log)
         env:
           WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
-          WANDB_BASE_URL: https://staging-aws.wandb.io   # 或 woven 的 base
+          WANDB_BASE_URL: https://staging-aws.wandb.io
+          # ===============================================================
+          # === 新增的环境变量：开启 W&B 的详细日志 ===
+          # ===============================================================
+          WANDB_LOG_LEVEL: debug
         run: |
           wandb --version
           wandb verify
